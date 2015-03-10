@@ -47,8 +47,20 @@ class Model(dict):
 
 	def __setattr__(self,key,value):
 		self[key] = value
+	@classmethod
+	def save(cls):
+		fields = []
+		params = []
+		args = []
+		for k, v in cls.__mappings__.iteritems():
+			fields.append(v.name)
+			params.append('?')
+			args.append(getattr(cls,k,None))
+			sql = 'insert into %s (%s) values (%s)' % (cls.__table__, ','.join(fields), ','.join(params))
+			print('SQL: %s' % sql)
+        	print('ARGS: %s' % str(args))
 
-	def save(self):
+	def save1(self):
 		fields = []
 		params = []
 		args = []
@@ -68,4 +80,8 @@ class User(Model):
 	email = StringField('email')
 	password = StringField('password')
 
+User.save()
+
+user = User(id =001,name = 'x',email ='m',password='w')
+user.save1()
 
